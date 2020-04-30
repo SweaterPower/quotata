@@ -60,6 +60,6 @@ RUN mkdir /var/session && chown www-data:www-data /var/session
 
 # symfony pool config
 COPY symfony.conf /usr/local/etc/php-fpm.d/symfony.conf
-
+RUN alias sf="bin/console"
 
 WORKDIR /var/www
