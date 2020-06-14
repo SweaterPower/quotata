@@ -39,14 +39,14 @@ services:
         volumes_from:
             - php
 
-    frontend:
-        container_name: quotata-frontend
-        restart: 'no'
-        user: "${DOCKER_USER_ID}:${DOCKER_GROUP_ID}"
-        build:
-            context: frontend
-        volumes:
-            - ${DOCKER_APP_PATH}:/var/www:cached
+    # frontend:
+    #     container_name: quotata-frontend
+    #     restart: 'no'
+    #     user: "${DOCKER_USER_ID}:${DOCKER_GROUP_ID}"
+    #     build:
+    #         context: frontend
+    #     volumes:
+    #         - ${DOCKER_APP_PATH}:/var/www:cached
 
 volumes:
     s_database:
