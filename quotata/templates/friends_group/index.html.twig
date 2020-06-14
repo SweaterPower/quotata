@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}FriendsGroup index{% endblock %}
+
+{% block body %}
+    <h1>FriendsGroup index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Created</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for friends_group in friends_groups %}
+            <tr>
+                <td>{{ friends_group.id }}</td>
+                <td>{{ friends_group.name }}</td>
+                <td>{{ friends_group.created ? friends_group.created|date('Y-m-d') : '' }}</td>
+                <td>
+                    <a href="{{ path('friends_group_show', {'id': friends_group.id}) }}">show</a>
+                    <a href="{{ path('friends_group_edit', {'id': friends_group.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('friends_group_new') }}">Create new</a>
+{% endblock %}
