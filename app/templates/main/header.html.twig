@@ -1,0 +1,10 @@
+{% block header %}
+<h1>Quotata test main page</h1>
+
+    {% if user.isLoggedIn %}
+            Hello {{ user.name }}
+            <a href="{{ url('app_logout') }}">Logout</a>
+        {% else %}
+            <a href="{{ url('app_login') }}">Login</a>
+    {% endif %}
+{% endblock %}

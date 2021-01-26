@@ -1,0 +1,95 @@
+version: '3.7'
+services:
+  php:
+    container_name: quotata-php
+    build:
+      context: php
+      args:
+        HOST_USER_ID: ${DOCKER_USER_ID}
+        HOST_GROUP_ID: ${DOCKER_GROUP_ID}
+    ports:
+      - 9000:9001
+    volumes:
+      - ${DOCKER_APP_PATH}:/var/www/app:cached
+    depends_on:
+      - db
+    networks:
+      - quotata-network
+
+  db:
+    container_name: quotata-db
+    image: postgres:alpine
+    restart: always
+    ports:
+      - 5432:5432
+    volumes:
+      - ${DOCKER_STORAGE_PATH}:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${DOCKER_DB_USER}
+      POSTGRES_PASSWORD: ${DOCKER_DB_PASSWORD}
+      POSTGRES_DB: ${DOCKER_DB_NAME}
+    networks:
+      - quotata-network
+
+  nginx:
+    container_name: quotata-nginx
+    build:
+      context: nginx
+      args:
+        HOST_USER_ID: ${DOCKER_USER_ID}
+        HOST_GROUP_ID: ${DOCKER_GROUP_ID}
+    ports:
+      - 8080:80
+    volumes:
+      - ${DOCKER_APP_PATH}:/var/www/app:cached
+    depends_on:
+      - php
+    networks:
+      - quotata-network
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8888:8080
+    networks:
+      - quotata-network
+
+  composer:
+    image: composer:2
+    container_name: quotata-composer
+    volumes:
+      - ${DOCKER_APP_PATH}:/var/www/app:cached
+    working_dir: /var/www/app
+    depends_on:
+      - php
+    entrypoint: ['composer', '--ignore-platform-reqs']
+    networks:
+      - quotata-network
+
+  npm:
+    image: node:latest
+    container_name: npm
+    volumes:
+      - ${DOCKER_APP_PATH}:/var/www/app:cached
+    working_dir: /var/www/app
+    entrypoint: ['npm']
+    networks:
+      - quotata-network
+
+  sf:
+    build:
+      context: php
+    container_name: quotata-console
+    volumes:
+      - ${DOCKER_APP_PATH}:/var/www/app:cached
+      - ${DOCKER_STORAGE_PATH}:/var/lib/postgresql/data
+    working_dir: /var/www/app
+    depends_on:
+      - db
+    entrypoint: ['bin/console']
+    networks:
+      - quotata-network
+
+networks:
+  quotata-network:
